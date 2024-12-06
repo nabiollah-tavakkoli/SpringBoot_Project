@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import biz.aeffegroup.entity.Client;
-import biz.aeffegroup.entity.Office;
-import biz.aeffegroup.model.Info;
+import biz.aeffegroup.entity.OfficeEntity;
+import biz.aeffegroup.entity.UserEntity;
+import biz.aeffegroup.model.InfoModel;
+import biz.aeffegroup.model.UserModel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,24 +21,28 @@ import lombok.extern.slf4j.Slf4j;
 public class InfoService {
 
 	@Autowired
-	private ClientService clientservice;
+	private UsersDetailsService userDetailsService;
 	@Autowired
 	private OfficeService officeservice;
 	@Autowired
 	private ModelMapper modelMapper;
 	
 	//requested create
-	public List<Info> requestedFetch(){
-		List<Office> officeList = null;
-		List<Client> clientList = null;
-		List<Info> infoList = new ArrayList<Info>();
-		Info requestedInfo = new Info();
+	public List<InfoModel> requestedFetch(){
+		List<OfficeEntity> officeList = null;
+		List<UserModel> userModelList = null;
+		List<UserEntity> userEntityList = new ArrayList<UserEntity>();
+		List<InfoModel> infoList = new ArrayList<InfoModel>();
+		InfoModel requestedInfo = new InfoModel();
 		try {
 			officeList = officeservice.fetchOffice();
-			clientList = clientservice.fetchClient();
-			for(Office office : officeList) {
-				for(Client client : clientList) {
-					requestedInfo = convertOfficeToInfo(office, client);
+			userModelList = userDetailsService.fetch();
+			for(UserModel userModel : userModelList) {
+				userEntityList.add(modelMapper.map(userModel, UserEntity.class));
+			}
+			for(OfficeEntity office : officeList) {
+				for(UserEntity user : userEntityList) {
+					requestedInfo = convertOfficeToInfo(office, user);
 					requestedInfo.setCreationDate(LocalDate.now());
 					infoList.add(requestedInfo);
 				}
@@ -48,23 +53,23 @@ public class InfoService {
 		return infoList;
 	}
 	
-	private Info convertOfficeToInfo(@RequestBody Office office, @RequestBody Client client) {
-		TypeMap<Office, Info> typeMapOfficeToInfo = modelMapper.typeMap(Office.class, Info.class);
+	private InfoModel convertOfficeToInfo(@RequestBody OfficeEntity office, @RequestBody UserEntity user) {
+		TypeMap<OfficeEntity, InfoModel> typeMapOfficeToInfo = modelMapper.typeMap(OfficeEntity.class, InfoModel.class);
 		typeMapOfficeToInfo.addMappings(mapper ->{
-			mapper.map(Office::getId, Info::setOfficeId);
-			mapper.map(Office::getName, Info::setOfficeName);
+			mapper.map(OfficeEntity::getId, InfoModel::setOfficeId);
+			mapper.map(OfficeEntity::getName, InfoModel::setOfficeName);
 
 		});
-		TypeMap<Client, Info> typeMapClientToInfo = modelMapper.typeMap(Client.class, Info.class);
+		TypeMap<UserEntity, InfoModel> typeMapClientToInfo = modelMapper.typeMap(UserEntity.class, InfoModel.class);
 		typeMapClientToInfo.addMappings(mapper ->{
-			mapper.map(Client::getId, Info::setClinetId);
-			mapper.map(Client::getName, Info::setClientName);
+			mapper.map(UserEntity::getId, InfoModel::setClinetId);
+			mapper.map(UserEntity::getUsername, InfoModel::setClientName);
 
 		});
 		
-		Info info = new Info();
+		InfoModel info = new InfoModel();
 		modelMapper.map(office, info);
-		modelMapper.map(client, info);
+		modelMapper.map(user, info);
 		
 		return info;
 	}

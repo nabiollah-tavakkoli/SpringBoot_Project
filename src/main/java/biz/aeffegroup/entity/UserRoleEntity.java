@@ -11,15 +11,18 @@ import lombok.Data;
 
 @Data
 @Entity
-public class UserRole {
+public class UserRoleEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
+	
 	@ManyToOne
 	@JoinColumn(name = "id_user")
-	private Users user;
+	private UserEntity user;
+	
 	@ManyToOne
 	@JoinColumn(name = "id_role")
-	private Role role;
+	private RoleEntity role;
+
 }

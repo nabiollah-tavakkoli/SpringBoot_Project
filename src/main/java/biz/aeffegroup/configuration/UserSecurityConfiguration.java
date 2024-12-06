@@ -10,6 +10,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 //import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -57,6 +58,8 @@ public class UserSecurityConfiguration{
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(requests -> requests
+                		.antMatchers("/h2-console/**").permitAll()
+                		.antMatchers("/member/**").permitAll()
                 		.antMatchers(
                 				HttpMethod.GET
 //                				"/info/requestedread/**",
@@ -84,6 +87,7 @@ public class UserSecurityConfiguration{
                 				HttpMethod.POST).hasAnyAuthority("admin")
                 		.antMatchers(
                 				HttpMethod.PUT).hasAnyAuthority("admin"))
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 				.httpBasic(Customizer.withDefaults());
 
         return http.build();

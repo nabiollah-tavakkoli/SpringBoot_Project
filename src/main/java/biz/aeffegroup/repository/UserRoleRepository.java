@@ -1,11 +1,11 @@
 package biz.aeffegroup.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import biz.aeffegroup.entity.UserRole;
+import biz.aeffegroup.entity.UserRoleEntity;
 
 @Repository
-public interface UserRoleRepository extends CrudRepository<UserRole, Long> {
+public interface UserRoleRepository extends JpaRepository<UserRoleEntity, Long> {
 
 }

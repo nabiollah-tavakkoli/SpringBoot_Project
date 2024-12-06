@@ -1,4 +1,4 @@
-package biz.aeffegroup.model;
+package biz.aeffegroup.service;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -7,14 +7,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import biz.aeffegroup.entity.Users;
+import biz.aeffegroup.entity.UserEntity;
 
 
 public class UsersPrincipal implements UserDetails {
 	
-	private Users user;
+	private UserEntity user;
 	
-	public UsersPrincipal(Users user) {
+	public UsersPrincipal(UserEntity user) {
 		this.user = user;
 	}
 

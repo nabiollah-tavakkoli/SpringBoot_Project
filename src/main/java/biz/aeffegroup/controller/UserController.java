@@ -7,40 +7,37 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import biz.aeffegroup.model.InfoModel;
 import biz.aeffegroup.model.UserModel;
-import biz.aeffegroup.service.InfoService;
 import biz.aeffegroup.service.UsersDetailsService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("info")
-public class InfoController {
-	
-	@Autowired
-	private InfoService infoService;
+@RequestMapping("users")
+public class UserController {
 	
 	@Autowired
 	private UsersDetailsService usersDetailsService;
-
-	@GetMapping("requestedread")
-	@PreAuthorize("user")
-	public ResponseEntity<List<InfoModel>> RequestedRead(){
+	
+	@PostMapping("create")
+	@PreAuthorize("admin")
+	public ResponseEntity<UserModel> create(@RequestBody UserModel user){
 		try {
-			return new ResponseEntity<List<InfoModel>>(infoService.requestedFetch(), HttpStatus.OK);
+			return new ResponseEntity<UserModel>(usersDetailsService.create(user), HttpStatus.CREATED);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<List<InfoModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<UserModel>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@GetMapping("readusers")
-	@PreAuthorize("admin")
-	public ResponseEntity<List<UserModel>> readusers(){
+	@GetMapping("read")
+	@PreAuthorize("user")
+	public ResponseEntity<List<UserModel>> read(){
 		try {
 			return new ResponseEntity<List<UserModel>>(usersDetailsService.fetch(), HttpStatus.OK);
 		} catch (Exception e) {
@@ -48,4 +45,5 @@ public class InfoController {
 			return new ResponseEntity<List<UserModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 }

@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @JsonPropertyOrder({"office_id", "client_id", "office_name", "client_name"})
-public class Info {
+public class InfoModel {
 	
 	@JsonProperty("office_id")
 	private Long officeId;
@@ -19,6 +19,7 @@ public class Info {
 	private String clientName;
 	@JsonProperty("office_name")
 	private String officeName;
+	@JsonProperty("local_Date")
 	private LocalDate creationDate;
 
 }

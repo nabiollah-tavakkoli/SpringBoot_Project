@@ -1,36 +1,40 @@
 package biz.aeffegroup.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 
 import lombok.Data;
 
+
 @Data
 @Entity
-@Table(name = "USERS")
-public class Users {
+@Table(name = "Users")
+public class UserEntity {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	@Column(name = "name")
+	@Column(name = "username")
 	private String username;
 	@Column(name = "password")
 	private String password;
 	@Column(name = "role")
 	private String role;
+
 	
-	@OneToOne
-	@JoinColumn(name = "id_developer")
-	private Developer developer;
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	private List<UserRoleEntity> roleList;
+
 	
 
 }

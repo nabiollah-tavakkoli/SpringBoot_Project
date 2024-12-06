@@ -12,55 +12,61 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import biz.aeffegroup.entity.Responsible;
-import biz.aeffegroup.service.ResponsibleService;
+import biz.aeffegroup.entity.ResponsibilityEntity;
+import biz.aeffegroup.model.ResponsibilityModel;
+import biz.aeffegroup.service.ResponsibilityService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("responsible")
-public class ResponsibleController {
+@RequestMapping("responsibility")
+public class ResponsibilityController {
 	
 	@Autowired
-	private ResponsibleService responsibleService;
+	private ResponsibilityService responsibilityService;
 	
 	@PostMapping("create")
 	@PreAuthorize("admin")
-	public ResponseEntity<Responsible> create(@RequestBody Responsible responsible){
+	public ResponseEntity<ResponsibilityModel> create(
+			@RequestParam Long id_responsibility, 
+			@RequestParam Long id_office, 
+			@RequestParam Long id_user, 
+			@RequestParam Long id_developer){
 		try {
-			return new ResponseEntity<Responsible>(responsibleService.saveResponsibile(responsible), HttpStatus.CREATED);
+			return new ResponseEntity<ResponsibilityModel>(responsibilityService.create(id_responsibility, id_office, id_user, id_developer), HttpStatus.CREATED);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<Responsible>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ResponsibilityModel>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@GetMapping("read")
 	@PreAuthorize("user")
-	public ResponseEntity<List<Responsible>> read(){
+	public ResponseEntity<List<ResponsibilityModel>> read(){
 		try {
-			return new ResponseEntity<List<Responsible>>(responsibleService.fetchResponsible(), HttpStatus.OK);
+			return new ResponseEntity<List<ResponsibilityModel>>(responsibilityService.fetch(), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<List<Responsible>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<List<ResponsibilityModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@PutMapping("update")
 	@PreAuthorize("admin")
-	public ResponseEntity<Responsible> update(@RequestBody Responsible responsible, @RequestBody Long ResponsibleId){
+	public ResponseEntity<ResponsibilityEntity> update(@RequestBody ResponsibilityEntity responsible, @RequestBody Long ResponsibleId){
 		try {
-			return new ResponseEntity<Responsible>(responsibleService.updateResponsible(responsible, ResponsibleId), HttpStatus.OK);
+			return new ResponseEntity<ResponsibilityEntity>(responsibilityService.updateResponsible(responsible, ResponsibleId), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<Responsible>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ResponsibilityEntity>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@DeleteMapping("delete")
 	@PreAuthorize("admin")
 	public ResponseEntity<Void> delete(@RequestBody Long ResponsibleId){
 		try {
-			responsibleService.deleteResponsible(ResponsibleId);
+			responsibilityService.deleteResponsible(ResponsibleId);
 			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			log.error(e.getMessage());

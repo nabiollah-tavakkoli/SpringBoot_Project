@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import biz.aeffegroup.entity.Office;
+import biz.aeffegroup.entity.OfficeEntity;
+import biz.aeffegroup.model.OfficeModel;
 import biz.aeffegroup.service.OfficeService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,32 +29,32 @@ public class OfficeController {
 	
 	@PostMapping("create")
 	@PreAuthorize("admin")
-	public ResponseEntity<Office> create(@RequestBody Office office){
+	public ResponseEntity<OfficeEntity> create(@RequestBody OfficeEntity office){
 		try {
-			return new ResponseEntity<Office>(officeService.saveOffice(office), HttpStatus.CREATED);
+			return new ResponseEntity<OfficeEntity>(officeService.saveOffice(office), HttpStatus.CREATED);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<Office>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<OfficeEntity>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@GetMapping("read")
 	@PreAuthorize("user")
-	public ResponseEntity<List<Office>> read(){
+	public ResponseEntity<List<OfficeModel>> read(){
 		try {
-			return new ResponseEntity<List<Office>>(officeService.fetchOffice(), HttpStatus.OK);
+			return new ResponseEntity<List<OfficeModel>>(officeService.fetchOfficeModel(), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<List<Office>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<List<OfficeModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@PutMapping("update")
 	@PreAuthorize("admin")
-	public ResponseEntity<Office> update(@RequestBody Office office, Long officeId){
+	public ResponseEntity<OfficeEntity> update(@RequestBody OfficeEntity office, Long officeId){
 		try {
-			return new ResponseEntity<Office>(officeService.udpateOffice(office, officeId), HttpStatus.OK);
+			return new ResponseEntity<OfficeEntity>(officeService.udpateOffice(office, officeId), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<Office>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<OfficeEntity>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@DeleteMapping("delete")

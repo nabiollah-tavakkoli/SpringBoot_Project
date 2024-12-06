@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import biz.aeffegroup.entity.Developer;
+import biz.aeffegroup.entity.DeveloperEntity;
+import biz.aeffegroup.model.DeveloperModel;
 import biz.aeffegroup.service.DeveloperService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,32 +30,36 @@ public class DeveloperController {
 	
 	@PostMapping("create")
 	@PreAuthorize("admin")
-	public ResponseEntity<Developer> create(@RequestBody Developer developer){
+	public ResponseEntity<DeveloperModel> create(
+			@RequestParam Long id_developer, 
+			@RequestParam Long id_office, 
+			@RequestParam Long id_user, 
+			@RequestParam Long id_responsibility){
 		try {
-			return new ResponseEntity<Developer>(devService.saveDeveloper(developer), HttpStatus.CREATED);
+			return new ResponseEntity<DeveloperModel>(devService.create(id_developer, id_office, id_user, id_responsibility), HttpStatus.CREATED);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<Developer>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<DeveloperModel>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@GetMapping("read")
 	@PreAuthorize("user")
-	public ResponseEntity<List<Developer>> read(){
+	public ResponseEntity<List<DeveloperModel>> read(){
 		try {
-			return new ResponseEntity<List<Developer>>(devService.fetchDeveloper(), HttpStatus.OK);
+			return new ResponseEntity<List<DeveloperModel>>(devService.fetchDeveloperModel(), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<List<Developer>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<List<DeveloperModel>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@PutMapping("update")
 	@PreAuthorize("admin")
-	public ResponseEntity<Developer> update(@RequestBody Developer developer, @RequestBody Long developerId){
+	public ResponseEntity<DeveloperEntity> update(@RequestBody DeveloperEntity developer, @RequestBody Long developerId){
 		try {
-			return new ResponseEntity<Developer>(devService.updateDeveloper(developer, developerId), HttpStatus.OK); 
+			return new ResponseEntity<DeveloperEntity>(devService.updateDeveloper(developer, developerId), HttpStatus.OK); 
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return new ResponseEntity<Developer>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<DeveloperEntity>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@DeleteMapping("delete")

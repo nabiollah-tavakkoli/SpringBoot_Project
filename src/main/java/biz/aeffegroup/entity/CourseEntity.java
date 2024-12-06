@@ -1,5 +1,7 @@
 package biz.aeffegroup.entity;
 
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,32 +10,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
 
-@Data
 @Entity
-@Table(name="developer")
-public class Developer {
+@Data
+@Table(name = "courseentity")
+public class CourseEntity {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
 	@Column(name = "name")
 	private String name;
-	@Column(name = "surname")
-	private String SurName;
 	
-	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_office")
-	private Office office;
-	
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_user")
-	private Users users;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinTable(name = "student_course",
+			joinColumns = @JoinColumn(name = "course_id"),
+			inverseJoinColumns = @JoinColumn(name = "student_id"))
+	private Set<StudentEntity> studentSet;
+
 }
