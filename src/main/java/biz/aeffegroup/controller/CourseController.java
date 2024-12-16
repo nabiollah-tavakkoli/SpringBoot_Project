@@ -29,10 +29,10 @@ public class CourseController {
 	@PostMapping("create")
 	@PreAuthorize("admin")
 	public ResponseEntity<CourseModel> create(
-			@RequestParam Long course_id,
-			@RequestParam Long student_id){
+			@RequestParam Long student_id,
+			@RequestParam Long course_id){
 		try {
-			return new ResponseEntity<CourseModel>(courseService.create(course_id, student_id), HttpStatus.CREATED);
+			return new ResponseEntity<CourseModel>(courseService.create(student_id, course_id), HttpStatus.CREATED);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return new ResponseEntity<CourseModel>(HttpStatus.INTERNAL_SERVER_ERROR);

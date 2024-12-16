@@ -3,21 +3,22 @@ package biz.aeffegroup.service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import biz.aeffegroup.entity.CourseEntity;
-import biz.aeffegroup.entity.StudentEntity;
 import biz.aeffegroup.model.CourseModel;
+import biz.aeffegroup.model.StudentModel;
 import biz.aeffegroup.repository.CourseRepository;
 import biz.aeffegroup.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Transactional
 @Slf4j
 public class CourseService {
 
@@ -29,16 +30,24 @@ public class CourseService {
 	private ModelMapper modelMapper;
 	
 	//create
-	public CourseModel create(Long course_id, Long student_id) {
+	public CourseModel create(Long student_id, Long course_id) {
 		CourseEntity courseEntity = new CourseEntity();
-		Set<StudentEntity> studentEntitySet = new HashSet<StudentEntity>();
+		//Set<StudentEntity> studentEntitySet = new HashSet<StudentEntity>();
+		
+		CourseModel courseModel = new CourseModel();
+		Set<StudentModel> studentModelSet = new HashSet<StudentModel>();
 		try {
 			courseEntity = courseRepository.findById(course_id).orElseThrow(NullPointerException::new);
-			if(Objects.nonNull(courseEntity.getStudentSet())) {
-				studentEntitySet.add(studentRepository.findById(student_id).orElseThrow(NullPointerException::new));
-			}
-			courseEntity.setStudentSet(studentEntitySet);
-			courseRepository.save(courseEntity);
+			
+			courseModel = modelMapper.map(courseEntity, CourseModel.class);
+			studentModelSet = courseModel.getStudentSet();
+			studentModelSet.add(modelMapper.map(studentRepository.findById(student_id).orElseThrow(NullPointerException::new), StudentModel.class));
+			courseModel.setStudentSet(studentModelSet);
+			courseRepository.save(modelMapper.map(courseModel, CourseEntity.class));
+			//studentEntitySet = courseEntity.getStudentSet();
+			//studentEntitySet.add(studentRepository.findById(student_id).orElseThrow(NullPointerException::new));
+			//courseEntity.setStudentSet(studentEntitySet);
+			//courseRepository.save(courseEntity);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}

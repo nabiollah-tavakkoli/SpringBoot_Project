@@ -2,6 +2,7 @@ package biz.aeffegroup.model;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -19,5 +20,6 @@ public class StudentModel {
 	private String surname;
 	
 	@JsonProperty("courseset")
+	@JsonBackReference
 	private Set<CourseModel> courseSet;
 }

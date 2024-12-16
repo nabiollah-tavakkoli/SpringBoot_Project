@@ -3,15 +3,14 @@ package biz.aeffegroup.service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import biz.aeffegroup.entity.CourseEntity;
 import biz.aeffegroup.entity.StudentEntity;
+import biz.aeffegroup.model.CourseModel;
 import biz.aeffegroup.model.StudentModel;
 import biz.aeffegroup.repository.CourseRepository;
 import biz.aeffegroup.repository.StudentRepository;
@@ -31,14 +30,22 @@ public class StudentService {
 	//create
 	public StudentModel create(Long student_id, Long course_id) {
 		StudentEntity studentEntity = new StudentEntity();
-		Set<CourseEntity> courseEntitySet = new HashSet<CourseEntity>();
+		//Set<CourseEntity> courseEntitySet = new HashSet<CourseEntity>();
+		
+		StudentModel studentModel = new StudentModel();
+		Set<CourseModel> courseModels = new HashSet<CourseModel>();
 		try {
 			studentEntity = studentRepository.findById(student_id).orElseThrow(NullPointerException::new);
-			if(Objects.nonNull(studentEntity.getCourseSet())) {
-				courseEntitySet.add(courseRepository.findById(course_id).orElseThrow(NullPointerException::new));
-			}
-			studentEntity.setCourseSet(courseEntitySet);
-			studentRepository.save(studentEntity);
+			
+			studentModel = modelMapper.map(studentEntity, StudentModel.class);
+			courseModels = studentModel.getCourseSet();
+			courseModels.add(modelMapper.map(courseRepository.findById(course_id).orElseThrow(NullPointerException::new), CourseModel.class));
+			studentModel.setCourseSet(courseModels);
+			studentRepository.save(modelMapper.map(studentModel, StudentEntity.class));
+			//courseEntitySet = studentEntity.getCourseSet();
+			//courseEntitySet.add(courseRepository.findById(course_id).orElseThrow(NullPointerException::new));
+			//studentEntity.setCourseSet(courseEntitySet);
+			//studentRepository.save(studentEntity);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}

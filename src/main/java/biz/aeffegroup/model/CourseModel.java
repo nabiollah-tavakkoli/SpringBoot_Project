@@ -2,6 +2,7 @@ package biz.aeffegroup.model;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -15,6 +16,8 @@ public class CourseModel {
 	private Long id;
 	@JsonProperty("name")
 	private String name;
+	
 	@JsonProperty("studentset")
+	@JsonManagedReference
 	private Set<StudentModel> studentSet;
 }

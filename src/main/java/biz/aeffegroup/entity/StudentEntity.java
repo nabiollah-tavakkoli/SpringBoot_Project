@@ -11,10 +11,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
 @Table(name = "studententity")
+@EqualsAndHashCode(exclude = {"courseSet"})
 public class StudentEntity {
 	
 	@Id
@@ -26,7 +28,7 @@ public class StudentEntity {
 	@Column(name = "surname")
 	private String surname;
 	
-	@ManyToMany(mappedBy = "studentSet")
+	@ManyToMany
 	private Set<CourseEntity> courseSet;
 
 }
