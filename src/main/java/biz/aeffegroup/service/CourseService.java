@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import biz.aeffegroup.entity.CourseEntity;
+import biz.aeffegroup.exception.MyEntityNotFoundException;
 import biz.aeffegroup.model.CourseModel;
 import biz.aeffegroup.model.StudentModel;
 import biz.aeffegroup.repository.CourseRepository;
@@ -18,7 +19,7 @@ import biz.aeffegroup.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = {MyEntityNotFoundException.class})
 @Slf4j
 public class CourseService {
 
@@ -41,6 +42,9 @@ public class CourseService {
 			
 			courseModel = modelMapper.map(courseEntity, CourseModel.class);
 			studentModelSet = courseModel.getStudentSet();
+			if(!studentRepository.existsById(student_id)) {
+				throw new MyEntityNotFoundException("not found any student to add");
+			}
 			studentModelSet.add(modelMapper.map(studentRepository.findById(student_id).orElseThrow(NullPointerException::new), StudentModel.class));
 			courseModel.setStudentSet(studentModelSet);
 			courseRepository.save(modelMapper.map(courseModel, CourseEntity.class));
@@ -51,7 +55,7 @@ public class CourseService {
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		return modelMapper.map(studentRepository.findById(courseEntity.getId()), CourseModel.class);
+		return modelMapper.map(courseRepository.findById(courseEntity.getId()), CourseModel.class);
 	}
 	
 	//read
